@@ -1,27 +1,27 @@
-### Fichiers et dossiers généraux de Java ###
-*.class
-# Packages produits
-*.jar
-*.war
-*.ear
-*.zip
-*.tar.gz
-*.log
-*.lock
-*.sql
-# Dossier de compilation de Spring Boot
-/backend/target/
+### Fichiers et dossiers spécifiques à Node.js (Backend & Frontend) ###
 
-### IDEs et Système d'Exploitation ###
-# IntelliJ IDEA
-.idea/
-*.iws
-*.iml
-*.ipr
-# Eclipse
-.classpath
-.project
-.settings/
+# Dépendances Node (INDISPENSABLE)
+/backend/node_modules
+/frontend/node_modules
+
+# Dossiers de compilation (Build)
+/frontend/build
+/frontend/dist
+
+# Fichiers sensibles et locaux (INDISPENSABLE)
+.env
+/backend/.env
+/frontend/.env
+
+# Journal d'audit de dépendances
+npm-debug.log*
+yarn-debug.log*
+.npm
+.yarn
+
+### IDEs et Système d'Exploitation (GÉNÉRAL) ###
+# Visual Studio Code
+.vscode/
 # macOS
 .DS_Store
 # Windows
