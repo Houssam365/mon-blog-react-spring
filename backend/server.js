@@ -6,9 +6,6 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(express.json()); // Pour analyser les corps de requête JSON
-app.use(cors()); // Configure CORS pour accepter les requêtes du frontend
 
 // Connexion à MongoDB
 mongoose.connect(process.env.MONGO_URI)
