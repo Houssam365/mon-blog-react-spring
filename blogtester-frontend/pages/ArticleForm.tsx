@@ -8,9 +8,11 @@ const ArticleForm: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // If id exists, it's Edit mode
   const navigate = useNavigate();
   const { token } = useAuth();
-  
+
   const [title, setTitle] = useState('');
+
   const [content, setContent] = useState('');
+  const [tags, setTags] = useState('');
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(!!id);
   const [error, setError] = useState('');
@@ -22,6 +24,7 @@ const ArticleForm: React.FC = () => {
           const data = await articleService.getOne(id);
           setTitle(data.title);
           setContent(data.content);
+          setTags(data.tags ? data.tags.join(', ') : '');
         } catch (err: any) {
           setError('Failed to fetch article data');
         } finally {
@@ -35,19 +38,20 @@ const ArticleForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) return;
-    
+
     setLoading(true);
     setError('');
 
     try {
-      const articleData = { title, content };
-      
+      const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+      const articleData = { title, content, tags: tagsArray };
+
       if (id) {
         await articleService.update(id, articleData, token);
       } else {
         await articleService.create(articleData, token);
       }
-      
+
       navigate('/');
     } catch (err: any) {
       setError(err.message || 'Operation failed');
@@ -65,7 +69,7 @@ const ArticleForm: React.FC = () => {
           <h1 className="text-2xl font-bold text-slate-900">
             {id ? 'Edit Article' : 'New Article'}
           </h1>
-          <button 
+          <button
             onClick={() => navigate('/')}
             className="text-slate-400 hover:text-slate-600"
           >
@@ -100,6 +104,17 @@ const ArticleForm: React.FC = () => {
               placeholder="Write your story here..."
               value={content}
               onChange={(e) => setContent(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Tags (comma separated)</label>
+            <input
+              type="text"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+              placeholder="tech, coding, react"
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
             />
           </div>
 

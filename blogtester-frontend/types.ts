@@ -1,7 +1,7 @@
 export interface User {
   _id: string;
   email: string;
-  username?: string; 
+  username?: string;
   // Add other user fields if your backend returns them
 }
 
@@ -10,6 +10,7 @@ export interface Article {
   title: string;
   content: string;
   author?: User | string; // Depending on if your backend populates the author
+  tags?: string[];
   createdAt: string;
   updatedAt: string;
 }

@@ -2,16 +2,16 @@
 
 # Dépendances Node (INDISPENSABLE)
 /backend/node_modules
-/frontend/node_modules
+/blogtester-frontend/node_modules
 
 # Dossiers de compilation (Build)
-/frontend/build
-/frontend/dist
+/blogtester-frontend/build
+/blogtester-frontend/dist
 
 # Fichiers sensibles et locaux (INDISPENSABLE)
 .env
 /backend/.env
-/frontend/.env
+/blogtester-frontend/.env
 
 # Journal d'audit de dépendances
 npm-debug.log*

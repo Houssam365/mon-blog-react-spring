@@ -4,7 +4,20 @@ const Comment = require('../models/Comment');
 // Récupérer tous les articles
 exports.getAllArticles = async (req, res) => {
     try {
-        const articles = await Article.find().populate('author', 'username').sort({ createdAt: -1 });
+        const { search } = req.query;
+        let query = {};
+
+        if (search) {
+            const searchRegex = new RegExp(search, 'i');
+            query = {
+                $or: [
+                    { title: searchRegex },
+                    { tags: searchRegex }
+                ]
+            };
+        }
+
+        const articles = await Article.find(query).populate('author', 'username').sort({ createdAt: -1 });
         res.json(articles);
     } catch (error) {
         res.status(500).json({ message: 'Erreur lors de la récupération des articles.', error: error.message });
@@ -14,10 +27,11 @@ exports.getAllArticles = async (req, res) => {
 // Créer un article
 exports.createArticle = async (req, res) => {
     try {
-        const { title, content } = req.body;
+        const { title, content, tags } = req.body;
         const article = new Article({
             title,
             content,
+            tags: tags || [],
             author: req.user.userId
         });
         await article.save();
@@ -57,6 +71,9 @@ exports.updateArticle = async (req, res) => {
 
         article.title = title || article.title;
         article.content = content || article.content;
+        if (req.body.tags) {
+            article.tags = req.body.tags;
+        }
 
         await article.save();
         res.json(article);
@@ -75,6 +92,10 @@ exports.deleteArticle = async (req, res) => {
         }
 
         // Vérifier que l'utilisateur est l'auteur
+        console.log('Article Author:', article.author.toString());
+        console.log('Request User ID:', req.user.userId);
+        console.log('Match:', article.author.toString() === req.user.userId);
+
         if (article.author.toString() !== req.user.userId) {
             return res.status(403).json({ message: 'Non autorisé.' });
         }

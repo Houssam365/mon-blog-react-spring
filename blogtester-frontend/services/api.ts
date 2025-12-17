@@ -15,7 +15,7 @@ const getHeaders = (token: string | null, hasBody: boolean = true) => {
 // Generic error handler
 const handleResponse = async (response: Response) => {
   const data = await response.json().catch(() => ({}));
-  
+
   if (!response.ok) {
     throw new Error(data.message || data.error || 'Something went wrong');
   }
@@ -32,7 +32,7 @@ export const authService = {
     });
     return handleResponse(res);
   },
-  
+
   register: async (credentials: any) => {
     const res = await fetch(`${API_BASE_URL}/auth/signup`, {
       method: 'POST',
@@ -45,8 +45,11 @@ export const authService = {
 
 // Article Services
 export const articleService = {
-  getAll: async () => {
-    const res = await fetch(`${API_BASE_URL}/articles`);
+  getAll: async (search?: string) => {
+    const url = search
+      ? `${API_BASE_URL}/articles?search=${encodeURIComponent(search)}`
+      : `${API_BASE_URL}/articles`;
+    const res = await fetch(url);
     return handleResponse(res);
   },
 

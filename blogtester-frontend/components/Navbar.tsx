@@ -1,15 +1,21 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, PenSquare, LogIn, UserPlus, BookOpen } from 'lucide-react';
+import { LogOut, PenSquare, LogIn, UserPlus, BookOpen, Search } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const { token, logout } = useAuth();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    navigate(`/?search=${encodeURIComponent(searchQuery)}`);
   };
 
   return (
@@ -22,18 +28,32 @@ const Navbar: React.FC = () => {
             <span>BlogTester</span>
           </Link>
 
+          {/* Search Bar */}
+          <form onSubmit={handleSearch} className="hidden md:flex flex-grow max-w-md mx-8">
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Search articles..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-full focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-sm bg-slate-50"
+              />
+              <Search className="absolute left-3 top-2.5 text-slate-400 w-4 h-4" />
+            </div>
+          </form>
+
           {/* Actions */}
           <div className="flex items-center space-x-4">
             {token ? (
               <>
-                <Link 
-                  to="/create" 
+                <Link
+                  to="/create"
                   className="flex items-center space-x-1 text-slate-600 hover:text-primary transition-colors"
                 >
                   <PenSquare className="w-4 h-4" />
                   <span className="hidden sm:inline">Write</span>
                 </Link>
-                <button 
+                <button
                   onClick={handleLogout}
                   className="flex items-center space-x-1 text-red-500 hover:text-red-700 transition-colors ml-4"
                 >
@@ -43,14 +63,14 @@ const Navbar: React.FC = () => {
               </>
             ) : (
               <>
-                <Link 
+                <Link
                   to="/login"
                   className="flex items-center space-x-1 text-slate-600 hover:text-primary transition-colors"
                 >
                   <LogIn className="w-4 h-4" />
                   <span>Login</span>
                 </Link>
-                <Link 
+                <Link
                   to="/register"
                   className="px-4 py-2 bg-primary text-white rounded-md hover:bg-indigo-700 transition-colors flex items-center space-x-1"
                 >

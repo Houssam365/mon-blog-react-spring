@@ -9,7 +9,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -21,12 +21,16 @@ const Login: React.FC = () => {
     try {
       // Backend expects { email, password } usually
       const data = await authService.login({ email, password });
-      
+
       // Check if backend returns token directly or inside object
       const token = data.token || data.access_token;
-      
+
       if (token) {
-        login(token);
+        login(token, {
+          _id: data.userId,
+          username: data.username,
+          email: data.email || email
+        });
         navigate('/');
       } else {
         setError('Login failed: No token received');
@@ -42,7 +46,7 @@ const Login: React.FC = () => {
     <div className="max-w-md mx-auto mt-10">
       <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
         <h2 className="text-2xl font-bold text-center text-slate-900 mb-6">Welcome Back</h2>
-        
+
         {error && (
           <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-4 border border-red-100">
             {error}
@@ -83,9 +87,8 @@ const Login: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-2.5 rounded-lg text-white font-medium transition-colors ${
-              loading ? 'bg-indigo-400 cursor-not-allowed' : 'bg-primary hover:bg-indigo-700'
-            }`}
+            className={`w-full py-2.5 rounded-lg text-white font-medium transition-colors ${loading ? 'bg-indigo-400 cursor-not-allowed' : 'bg-primary hover:bg-indigo-700'
+              }`}
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

@@ -8,12 +8,12 @@ import { Calendar, MessageCircle, Trash2, Edit2, Send } from 'lucide-react';
 const ArticleDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { token } = useAuth();
-  
+  const { token, user } = useAuth();
+
   const [article, setArticle] = useState<Article | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
-  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -57,7 +57,7 @@ const ArticleDetail: React.FC = () => {
     setSubmitting(true);
     try {
       await commentService.add({ articleId: id, content: newComment }, token);
-      
+
       // Refresh comments
       const updatedComments = await commentService.getByArticle(id);
       setComments(Array.isArray(updatedComments) ? updatedComments : (updatedComments.comments || []));
@@ -91,23 +91,40 @@ const ArticleDetail: React.FC = () => {
           <div className="flex items-center text-sm text-slate-500 mb-8 pb-6 border-b border-slate-100">
             <Calendar className="w-4 h-4 mr-1" />
             <span className="mr-4">{new Date(article.createdAt).toLocaleDateString()}</span>
-            
-            {/* Simple check: if logged in, show controls. Real app would check user ownership */}
-            {token && (
-              <div className="flex items-center ml-auto space-x-3">
-                <Link to={`/edit/${article._id}`} className="text-blue-600 hover:text-blue-800 flex items-center">
-                  <Edit2 className="w-4 h-4 mr-1" /> Edit
-                </Link>
-                <button onClick={handleDeleteArticle} className="text-red-500 hover:text-red-700 flex items-center">
-                  <Trash2 className="w-4 h-4 mr-1" /> Delete
-                </button>
-              </div>
-            )}
+            <span className="mr-4 text-slate-400">|</span>
+            <span className="mr-4 font-medium text-primary">
+              By {typeof article.author === 'object' ? (article.author as any).username : 'Unknown'}
+            </span>
+
+            {/* Check if user is the author */}
+            {user && article.author && (
+              (typeof article.author === 'string' && article.author === user._id) ||
+              (typeof article.author === 'object' && (article.author as any)._id === user._id)
+            ) && (
+                <div className="flex items-center ml-auto space-x-3">
+                  <Link to={`/edit/${article._id}`} className="text-blue-600 hover:text-blue-800 flex items-center">
+                    <Edit2 className="w-4 h-4 mr-1" /> Edit
+                  </Link>
+                  <button onClick={handleDeleteArticle} className="text-red-500 hover:text-red-700 flex items-center">
+                    <Trash2 className="w-4 h-4 mr-1" /> Delete
+                  </button>
+                </div>
+              )}
           </div>
-          
-          <div className="prose prose-slate max-w-none text-slate-800 leading-relaxed whitespace-pre-wrap">
+
+          <div className="prose prose-slate max-w-none text-slate-800 leading-relaxed whitespace-pre-wrap mb-6">
             {article.content}
           </div>
+
+          {article.tags && article.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 pt-6 border-t border-slate-100">
+              {article.tags.map((tag, index) => (
+                <span key={index} className="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-sm font-medium">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -158,14 +175,17 @@ const ArticleDetail: React.FC = () => {
                 </div>
               </div>
               <p className="text-slate-700 text-sm mb-2">{comment.content}</p>
-              {token && (
-                 <button 
-                   onClick={() => handleDeleteComment(comment._id)}
-                   className="text-xs text-red-400 hover:text-red-600"
-                 >
-                   Delete
-                 </button>
-              )}
+              {user && comment.author && (
+                (typeof comment.author === 'string' && comment.author === user._id) ||
+                (typeof comment.author === 'object' && (comment.author as any)._id === user._id)
+              ) && (
+                  <button
+                    onClick={() => handleDeleteComment(comment._id)}
+                    className="text-xs text-red-400 hover:text-red-600"
+                  >
+                    Delete
+                  </button>
+                )}
             </div>
           ))}
           {comments.length === 0 && (
