@@ -4,6 +4,8 @@ import { articleService, commentService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Article, Comment } from '../types';
 import { Calendar, MessageCircle, Trash2, Edit2, Send } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const ArticleDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -112,8 +114,8 @@ const ArticleDetail: React.FC = () => {
               )}
           </div>
 
-          <div className="prose prose-slate max-w-none text-slate-800 leading-relaxed whitespace-pre-wrap mb-6">
-            {article.content}
+          <div className="prose prose-slate max-w-none text-slate-800 leading-relaxed mb-6">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{article.content}</ReactMarkdown>
           </div>
 
           {article.tags && article.tags.length > 0 && (
@@ -139,7 +141,7 @@ const ArticleDetail: React.FC = () => {
           <form onSubmit={handleAddComment} className="mb-8">
             <textarea
               className="w-full p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-y min-h-[100px]"
-              placeholder="Add to the discussion..."
+              placeholder="Add to the discussion... (Markdown supported)"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               required
@@ -174,7 +176,9 @@ const ArticleDetail: React.FC = () => {
                   {new Date(comment.createdAt).toLocaleDateString()}
                 </div>
               </div>
-              <p className="text-slate-700 text-sm mb-2">{comment.content}</p>
+              <div className="text-slate-700 text-sm mb-2 prose prose-sm max-w-none">
+                <ReactMarkdown>{comment.content}</ReactMarkdown>
+              </div>
               {user && comment.author && (
                 (typeof comment.author === 'string' && comment.author === user._id) ||
                 (typeof comment.author === 'object' && (comment.author as any)._id === user._id)

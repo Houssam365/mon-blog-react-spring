@@ -45,10 +45,12 @@ export const authService = {
 
 // Article Services
 export const articleService = {
-  getAll: async (search?: string) => {
-    const url = search
-      ? `${API_BASE_URL}/articles?search=${encodeURIComponent(search)}`
-      : `${API_BASE_URL}/articles`;
+  getAll: async (search?: string, author?: string) => {
+    const params = new URLSearchParams();
+    if (search) params.append('search', search);
+    if (author) params.append('author', author);
+
+    const url = `${API_BASE_URL}/articles?${params.toString()}`;
     const res = await fetch(url);
     return handleResponse(res);
   },
@@ -90,6 +92,11 @@ export const commentService = {
   getByArticle: async (articleId: string) => {
     // Matches router.get('/article/:articleId', ...)
     const res = await fetch(`${API_BASE_URL}/comments/article/${articleId}`);
+    return handleResponse(res);
+  },
+
+  getByAuthor: async (userId: string) => {
+    const res = await fetch(`${API_BASE_URL}/comments/author/${userId}`);
     return handleResponse(res);
   },
 

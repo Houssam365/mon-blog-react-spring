@@ -5,6 +5,7 @@ const auth = require('../middleware/auth');
 
 // Routes publiques (optionnel, sinon protégées)
 router.get('/article/:articleId', commentController.getCommentsByArticle);
+router.get('/author/:userId', commentController.getCommentsByAuthor);
 
 // Routes protégées
 router.post('/', auth, commentController.addComment);

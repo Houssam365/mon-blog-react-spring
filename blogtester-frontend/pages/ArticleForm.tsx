@@ -97,11 +97,13 @@ const ArticleForm: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Content</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Content <span className="text-xs text-slate-400 font-normal">(Markdown supported)</span>
+            </label>
             <textarea
               required
               className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all min-h-[300px] font-mono text-sm leading-relaxed"
-              placeholder="Write your story here..."
+              placeholder="Write your story here... (Markdown supported)"
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />

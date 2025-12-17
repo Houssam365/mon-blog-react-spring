@@ -35,6 +35,18 @@ exports.getCommentsByArticle = async (req, res) => {
     }
 }
 
+// Récupérer les commentaires d'un auteur
+exports.getCommentsByAuthor = async (req, res) => {
+    try {
+        const comments = await Comment.find({ author: req.params.userId })
+            .populate('article', 'title')
+            .sort({ createdAt: -1 });
+        res.json(comments);
+    } catch (error) {
+        res.status(500).json({ message: 'Erreur lors de la récupération des commentaires de l\'utilisateur.', error: error.message });
+    }
+};
+
 // Supprimer un commentaire
 exports.deleteComment = async (req, res) => {
     try {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, PenSquare, LogIn, UserPlus, BookOpen, Search } from 'lucide-react';
+import { LogOut, PenSquare, LogIn, UserPlus, BookOpen, Search, User as UserIcon } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const { token, logout } = useAuth();
@@ -52,6 +52,13 @@ const Navbar: React.FC = () => {
                 >
                   <PenSquare className="w-4 h-4" />
                   <span className="hidden sm:inline">Write</span>
+                </Link>
+                <Link
+                  to="/profile"
+                  className="flex items-center space-x-1 text-slate-600 hover:text-primary transition-colors"
+                >
+                  <UserIcon className="w-4 h-4" />
+                  <span className="hidden sm:inline">Profile</span>
                 </Link>
                 <button
                   onClick={handleLogout}

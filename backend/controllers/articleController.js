@@ -17,6 +17,10 @@ exports.getAllArticles = async (req, res) => {
             };
         }
 
+        if (req.query.author) {
+            query.author = req.query.author;
+        }
+
         const articles = await Article.find(query).populate('author', 'username').sort({ createdAt: -1 });
         res.json(articles);
     } catch (error) {

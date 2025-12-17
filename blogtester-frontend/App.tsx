@@ -7,11 +7,12 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ArticleDetail from './pages/ArticleDetail';
 import ArticleForm from './pages/ArticleForm';
+import Profile from './pages/Profile';
 
 // Wrapper for protected routes
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { token, isLoading } = useAuth();
-  
+
   if (isLoading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
   if (!token) return <Navigate to="/login" replace />;
 
@@ -28,23 +29,31 @@ const AppContent = () => {
           <Route path="/article/:id" element={<ArticleDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          
+
           {/* Protected Routes */}
-          <Route 
-            path="/create" 
+          <Route
+            path="/create"
             element={
               <ProtectedRoute>
                 <ArticleForm />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/edit/:id" 
+          <Route
+            path="/edit/:id"
             element={
               <ProtectedRoute>
                 <ArticleForm />
               </ProtectedRoute>
-            } 
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
           />
         </Routes>
       </main>

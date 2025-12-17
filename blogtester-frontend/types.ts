@@ -19,6 +19,7 @@ export interface Comment {
   _id: string;
   content: string;
   articleId: string;
+  article?: Article | string; // Populated article
   author?: User | string;
   createdAt: string;
 }

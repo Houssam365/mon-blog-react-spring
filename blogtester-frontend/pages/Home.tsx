@@ -4,6 +4,9 @@ import { articleService } from '../services/api';
 import { Article } from '../types';
 import { ArrowRight, Calendar, User as UserIcon } from 'lucide-react';
 
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
 const Home: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
 
@@ -68,9 +71,9 @@ const Home: React.FC = () => {
                     {article.title}
                   </Link>
                 </h2>
-                <p className="text-slate-600 mb-4 line-clamp-3 text-sm">
-                  {article.content}
-                </p>
+                <div className="text-slate-600 mb-4 line-clamp-3 text-sm prose prose-sm max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} allowedElements={['p', 'strong', 'em', 'span']}>{article.content}</ReactMarkdown>
+                </div>
                 {article.tags && article.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-4">
                     {article.tags.map((tag, index) => (
