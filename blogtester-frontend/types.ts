@@ -5,6 +5,8 @@ export interface User {
   // Add other user fields if your backend returns them
 }
 
+// AI-ASSISTED: ChatGPT suggested defining author as 'User | string' to handle populated vs non-populated responses
+// Prompt: "How to type a mongoose populated field in typescript interface?"
 export interface Article {
   _id: string;
   title: string;

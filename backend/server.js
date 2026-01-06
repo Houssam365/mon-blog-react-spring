@@ -14,18 +14,28 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/articles', require('./routes/articles'));
 app.use('/api/comments', require('./routes/comments'));
 
-// Connexion à MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('Connexion à MongoDB réussie !');
-    // Démarrage du serveur une fois la connexion DB établie
-    app.listen(PORT, () => {
-      console.log(`Serveur Express démarré sur le port ${PORT}`);
+// Connexion à MongoDB avec retry
+const connectWithRetry = () => {
+  console.log('Tentative de connexion à MongoDB...');
+  mongoose.connect(process.env.MONGO_URI)
+    .then(() => {
+      console.log('Connexion à MongoDB réussie !');
+      // Démarrage du serveur si pas déjà démarré
+      if (!server) {
+        server = app.listen(PORT, () => {
+          console.log(`Serveur Express démarré sur le port ${PORT}`);
+        });
+      }
+    })
+    .catch((error) => {
+      console.error('Erreur de connexion à MongoDB :', error.message);
+      console.log('Nouvelle tentative dans 5 secondes...');
+      setTimeout(connectWithRetry, 5000);
     });
-  })
-  .catch((error) => {
-    console.error('Erreur de connexion à MongoDB :', error.message);
-  });
+};
+
+let server = null;
+connectWithRetry();
 
 // Route de test simple (endpoint)
 app.get('/', (req, res) => {

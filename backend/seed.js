@@ -1,3 +1,7 @@
+// AI-ASSISTED: Gemini provided the scaffolding for connecting and clearing the DB
+// Prompt: "Node.js script to connect to mongo and delete all collections"
+// Modification: Customized data models and integrated real bcrypt hashing.
+
 require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');

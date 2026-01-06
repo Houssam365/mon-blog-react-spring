@@ -1,15 +1,46 @@
-# Blog App – Spécification et Backend
+# BlogTester - Projet Full Stack
 
-## 1. Description du projet
+## Équipe
+- Houssam Syouti
 
-Ce projet est une application de blogging.  
-Les utilisateurs peuvent :
-- consulter une liste d’articles,
-- voir le détail d’un article,
-- rechercher des articles,
-- laisser des commentaires (pour les utilisateurs connectés).
+## Description
+Projet Lab V - Développement Full Stack.
+Ceci est une plateforme de blog complète offrant :
+- **Accès Public** : Parcourir, rechercher et lire des articles avec un contenu enrichi en Markdown.
+- **Accès Membre** : Authentification sécurisée (JWT), création/édition d'articles, publication de commentaires et gestion du profil utilisateur.
+- **Stack Technique** : React (Vite+Context+Tailwind), Node.js (Express), MongoDB.
 
-À terme, l’application proposera une authentification (inscription, connexion) et une interface web en React.
+## Prérequis
+- **Docker** & **Docker Compose** (Méthode recommandée)
+- *Alternativement* : Node.js v18+ & MongoDB v6+ (pour une installation manuelle)
+
+## Installation & Démarrage Rapide
+
+Le projet inclut un script automatisé pour tout gérer (construction, lancement, peuplement de la base de données).
+
+### 1. Démarrer l'application
+Ouvrez votre terminal à la racine du projet et exécutez :
+
+```bash
+# Rendre le script exécutable (première fois uniquement)
+chmod +x run.sh
+
+# Lancer le projet
+./run.sh
+```
+
+Cette commande va :
+1. Nettoyer les conteneurs existants.
+2. Construire et démarrer toute la stack (Frontend, Backend, Base de données).
+3. Vous demander si vous souhaitez peupler la base de données avec des données de test (Oui/Non).
+
+### 2. Accéder à l'application
+- **Frontend** : http://localhost:3000
+- **API Backend** : http://localhost:5000
+
+---
+
+## Spécifications Détaillées
 
 ## 2. Objectifs et public cible
 
@@ -128,7 +159,6 @@ Le projet sera considéré comme réussi si :
   - Nouvelle route `/profile` protégée.
   - Affichage centralisé de tous les articles rédigés par l'utilisateur connecté.
   - Barre latérale listant l'historique des commentaires de l'utilisateur avec liens vers les articles concernés.
-  - Mise à jour du backend pour supporter le filtrage des articles par auteur et la récupération des commentaires par auteur.
 - **Design Responsive (Mobile First)** :
   - Adaptation complète de l'interface pour les écrans mobiles, tablettes et bureaux.
   - **Navbar** : Menu "Hamburger" sur mobile, navigation complète sur desktop.
@@ -138,5 +168,11 @@ Le projet sera considéré comme réussi si :
   - Script `backend/seed.js` pour peupler la base de données avec des utilisateurs, articles et commentaires réalistes utilisant la syntaxe Markdown.
 - **Améliorations Diverses** :
   - Affichage de l'auteur des articles et commentaires.
-  - Filtrage des articles par auteur via l'API.
   - Lien vers le profil ajouté dans la barre de navigation.
+- **Expérience Utilisateur (UX) & Identité** :
+  - **Confirmation de suppression** : Remplacement des alertes natives du navigateur par une modale React esthétique et non-bloquante pour la suppression d'articles et de commentaires.
+  - **Identité Visuelle** : Création et intégration d'un logo personnalisé pour l'application, visible notamment en tant que Favicon.
+- **DevOps & Déploiement** :
+  - **Dockerisation Complète** : Configuration `docker-compose.yml` pour orchestrer le Backend, le Frontend (Nginx) et MongoDB.
+  - **Script de Lancement Automatisé** : Script `run.sh` interactif permettant de lancer l'environnement complet et de peupler la base de données (seed) en une seule commande.
+  - **Robustesse Backend** : Implémentation d'une logique de reconnexion automatique à MongoDB pour gérer les délais de démarrage des conteneurs.

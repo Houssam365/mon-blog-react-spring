@@ -6,6 +6,7 @@ import { Article, Comment } from '../types';
 import { Calendar, MessageCircle, Trash2, Edit2, Send } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 const ArticleDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +20,14 @@ const ArticleDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  // State for Confirmation Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalConfig, setModalConfig] = useState<{
+    title: string;
+    message: string;
+    action: () => Promise<void>;
+  } | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,8 +51,26 @@ const ArticleDetail: React.FC = () => {
     fetchData();
   }, [id]);
 
+  const confirmDeleteArticle = () => {
+    setModalConfig({
+      title: 'Delete Article',
+      message: 'Are you sure you want to permanently delete this article? This action cannot be undone.',
+      action: handleDeleteArticle
+    });
+    setIsModalOpen(true);
+  };
+
+  const confirmDeleteComment = (commentId: string) => {
+    setModalConfig({
+      title: 'Delete Comment',
+      message: 'Do you really want to remove this comment?',
+      action: () => handleDeleteComment(commentId)
+    });
+    setIsModalOpen(true);
+  };
+
   const handleDeleteArticle = async () => {
-    if (!id || !token || !window.confirm('Are you sure you want to delete this article?')) return;
+    if (!id || !token) return;
     try {
       await articleService.delete(id, token);
       navigate('/');
@@ -72,7 +99,7 @@ const ArticleDetail: React.FC = () => {
   };
 
   const handleDeleteComment = async (commentId: string) => {
-    if (!token || !window.confirm('Delete this comment?')) return;
+    if (!token) return;
     try {
       await commentService.delete(commentId, token);
       setComments(comments.filter(c => c._id !== commentId));
@@ -81,11 +108,30 @@ const ArticleDetail: React.FC = () => {
     }
   };
 
+  const handleConfirmAction = async () => {
+    if (modalConfig?.action) {
+      await modalConfig.action();
+      setIsModalOpen(false);
+      setModalConfig(null);
+    }
+  };
+
   if (loading) return <div className="text-center py-20">Loading...</div>;
   if (error || !article) return <div className="text-center py-20 text-red-500">{error || 'Article not found'}</div>;
 
   return (
     <div className="max-w-3xl mx-auto">
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        title={modalConfig?.title || 'Confirm Action'}
+        message={modalConfig?.message || 'Are you sure?'}
+        onConfirm={handleConfirmAction}
+        onCancel={() => setIsModalOpen(false)}
+        isDanger={true}
+        confirmText="Delete"
+      />
+
       {/* Article Content */}
       {/* Article Content */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8">
@@ -108,7 +154,7 @@ const ArticleDetail: React.FC = () => {
                   <Link to={`/edit/${article._id}`} className="text-blue-600 hover:text-blue-800 flex items-center">
                     <Edit2 className="w-4 h-4 mr-1" /> Edit
                   </Link>
-                  <button onClick={handleDeleteArticle} className="text-red-500 hover:text-red-700 flex items-center">
+                  <button onClick={confirmDeleteArticle} className="text-red-500 hover:text-red-700 flex items-center">
                     <Trash2 className="w-4 h-4 mr-1" /> Delete
                   </button>
                 </div>
@@ -185,7 +231,7 @@ const ArticleDetail: React.FC = () => {
                 (typeof comment.author === 'object' && (comment.author as any)._id === user._id)
               ) && (
                   <button
-                    onClick={() => handleDeleteComment(comment._id)}
+                    onClick={() => confirmDeleteComment(comment._id)}
                     className="text-xs text-red-400 hover:text-red-600"
                   >
                     Delete

@@ -101,6 +101,7 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
+      {/* AI-ASSISTED: LLM suggested the responsive logic (md:hidden) and absolute positioning for the dropdown */}
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-slate-100 px-4 pt-4 pb-6 shadow-lg absolute w-full left-0">
