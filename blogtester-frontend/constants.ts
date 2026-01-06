@@ -1,7 +1,6 @@
-// Change this to match your local backend port
-// Example: if your express app listens on 3000, use http://localhost:3000/api
-// We assume your routers are mounted at /api/auth, /api/articles, /api/comments
-export const API_BASE_URL = 'http://localhost:5000/api';
+// Using relative path allows Nginx (Docker) or Vite Proxy (Dev) to route correctly
+// This fixes CORS and "Failed to fetch" on remote environments like Gitpod/Codespaces
+export const API_BASE_URL = '/api';
 
 export enum FetchState {
   IDLE = 'IDLE',
