@@ -42,15 +42,10 @@ echo "🌐 Frontend : http://localhost:3000"
 echo "🔌 Backend  : http://localhost:5000"
 echo "------------------------------------------------"
 
-# Demande pour peupler la base de données
-read -p "🌱 Voulez-vous peupler la base de données avec des données de test ? (o/n) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Oo]$ ]]
-then
-    echo "🌱 Exécution du seed..."
-    docker exec -it blog_backend node seed.js
-    echo "✨ Base de données peuplée avec succès !"
-fi
+# Peuplement automatique de la base de données
+echo "🌱 Exécution du seed (données de test)..."
+docker exec -it blog_backend node seed.js
+echo "✨ Base de données peuplée avec succès !"
 
 echo ""
 echo "📝 Pour voir les logs, exécutez : docker compose logs -f"

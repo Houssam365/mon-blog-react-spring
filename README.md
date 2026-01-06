@@ -32,7 +32,7 @@ chmod +x run.sh
 Cette commande va :
 1. Nettoyer les conteneurs existants.
 2. Construire et démarrer toute la stack (Frontend, Backend, Base de données).
-3. Vous demander si vous souhaitez peupler la base de données avec des données de test (Oui/Non).
+3. Peupler automatiquement la base de données avec des données de test.
 
 ### 2. Accéder à l'application
 - **Frontend** : http://localhost:3000
